@@ -5,13 +5,13 @@
 package com.ballet.dom;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.Temporal;
 
 /**
  *
@@ -19,21 +19,23 @@ import javax.persistence.Temporal;
  */
 @Entity
 public class Producto implements Serializable {
+    @ManyToMany(mappedBy = "productos")
+    private List<Compra> compras;
+    
+    private String descripcion;
+    private String color;
+    private String talle;
+    private Double precioCompra;
+    private Double precioVenta;
+    @ManyToOne
+    private Proveedor proveedor;
+    
+    
+    
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private String descripcion;
-    private String color;
-    private String talle;
-    private double precioCompra;
-    private double precioVenta;
-    @Temporal(javax.persistence.TemporalType.DATE)
-    private Date fechaComp;
-    @Temporal(javax.persistence.TemporalType.DATE)
-    private Date fechaVenta;
-    @ManyToOne
-    private Proveedor proveedor;
 
     public Long getId() {
         return id;
@@ -42,8 +44,6 @@ public class Producto implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
-    
-    
 
     @Override
     public int hashCode() {
@@ -67,7 +67,21 @@ public class Producto implements Serializable {
 
     @Override
     public String toString() {
-        return this.getDescripcion() + " - " + this.getTalle();
+        return "com.ballet.dom.Producto[ id=" + id + " ]";
+    }
+
+    /**
+     * @return the compras
+     */
+    public List<Compra> getCompras() {
+        return compras;
+    }
+
+    /**
+     * @param compras the compras to set
+     */
+    public void setCompras(List<Compra> compras) {
+        this.compras = compras;
     }
 
     /**
@@ -115,57 +129,29 @@ public class Producto implements Serializable {
     /**
      * @return the precioCompra
      */
-    public double getPrecioCompra() {
+    public Double getPrecioCompra() {
         return precioCompra;
     }
 
     /**
      * @param precioCompra the precioCompra to set
      */
-    public void setPrecioCompra(double precioCompra) {
+    public void setPrecioCompra(Double precioCompra) {
         this.precioCompra = precioCompra;
     }
 
     /**
      * @return the precioVenta
      */
-    public double getPrecioVenta() {
+    public Double getPrecioVenta() {
         return precioVenta;
     }
 
     /**
      * @param precioVenta the precioVenta to set
      */
-    public void setPrecioVenta(double precioVenta) {
+    public void setPrecioVenta(Double precioVenta) {
         this.precioVenta = precioVenta;
-    }
-
-    /**
-     * @return the fechaComp
-     */
-    public Date getFechaComp() {
-        return fechaComp;
-    }
-
-    /**
-     * @param fechaComp the fechaComp to set
-     */
-    public void setFechaComp(Date fechaComp) {
-        this.fechaComp = fechaComp;
-    }
-
-    /**
-     * @return the fechaVenta
-     */
-    public Date getFechaVenta() {
-        return fechaVenta;
-    }
-
-    /**
-     * @param fechaVenta the fechaVenta to set
-     */
-    public void setFechaVenta(Date fechaVenta) {
-        this.fechaVenta = fechaVenta;
     }
 
     /**

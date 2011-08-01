@@ -5,6 +5,7 @@
 package com.ballet.dom;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -67,7 +68,7 @@ public class Proveedor implements Serializable {
 
     @Override
     public String toString() {
-        return "com.ballet.dom.Proveedor[ id=" + id + " ]";
+        return this.getNombre() + " " + this.getApellido();
     }
 
     /**
