@@ -12,11 +12,14 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 
 /**
  *
  * @author Isma
  */
+@NamedQueries({@NamedQuery(name = "Productos.findAll", query = "SELECT p FROM Producto p")})
 @Entity
 public class Producto implements Serializable {
     @ManyToMany(mappedBy = "productos")
@@ -29,9 +32,6 @@ public class Producto implements Serializable {
     private Double precioVenta;
     @ManyToOne
     private Proveedor proveedor;
-    
-    
-    
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
