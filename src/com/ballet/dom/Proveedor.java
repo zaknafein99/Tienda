@@ -5,9 +5,7 @@
 package com.ballet.dom;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -24,7 +22,7 @@ import javax.persistence.OneToMany;
 @NamedQueries({@NamedQuery(name = "Proveedores.findAll", query = "SELECT p FROM Proveedor p")})
 @Entity
 public class Proveedor implements Serializable {
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "proveedor")
+    @OneToMany(mappedBy = "proveedor")
     private List<Producto> productos;
     private static final long serialVersionUID = 1L;
     @Id

@@ -3,14 +3,18 @@
   <persistence-unit name="TiendaPU" transaction-type="RESOURCE_LOCAL">
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
     <class>com.ballet.dom.Proveedor</class>
-    <class>com.ballet.dom.Compra</class>
     <class>com.ballet.dom.Producto</class>
+    <class>com.ballet.dom.Prod_stock</class>
+    <class>com.ballet.dom.LineaCompra</class>
+    <class>com.ballet.dom.Compra</class>
+    <class>com.ballet.dom.Venta</class>
+    <class>com.ballet.dom.ItemStock</class>
+    <class>com.ballet.dom.LineaVenta</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/tienda"/>
       <property name="javax.persistence.jdbc.password" value="root"/>
       <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
       <property name="javax.persistence.jdbc.user" value="root"/>
-      <property name="eclipselink.ddl-generation" value="create-tables"/>
     </properties>
   </persistence-unit>
 </persistence>

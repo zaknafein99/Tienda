@@ -7,32 +7,25 @@ package com.ballet.dom;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.persistence.Temporal;
 
 /**
  *
  * @author Isma
  */
 @Entity
-public class Compra implements Serializable {
+public class Venta implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    
-    @OneToMany(cascade = CascadeType.ALL)
-    private Collection<LineaCompra> compras = new ArrayList<LineaCompra>();
+    @OneToMany
+    private Collection<LineaVenta> ventas = new ArrayList<LineaVenta>();
 
-    @Temporal(javax.persistence.TemporalType.DATE)
-    private Date fechaPedido;
-    
     public Long getId() {
         return id;
     }
@@ -51,10 +44,10 @@ public class Compra implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Compra)) {
+        if (!(object instanceof Venta)) {
             return false;
         }
-        Compra other = (Compra) object;
+        Venta other = (Venta) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -63,35 +56,21 @@ public class Compra implements Serializable {
 
     @Override
     public String toString() {
-        return "com.ballet.dom.Pedido[ id=" + id + " ]";
+        return "com.ballet.dom.Venta[ id=" + id + " ]";
     }
 
     /**
-     * @return the compras
+     * @return the ventas
      */
-    public Collection<LineaCompra> getCompras() {
-        return compras;
+    public Collection<LineaVenta> getVentas() {
+        return ventas;
     }
 
     /**
-     * @param compras the compras to set
+     * @param ventas the ventas to set
      */
-    public void setCompras(Collection<LineaCompra> compras) {
-        this.compras = compras;
-    }
-
-    /**
-     * @return the fechaPedido
-     */
-    public Date getFechaPedido() {
-        return fechaPedido;
-    }
-
-    /**
-     * @param fechaPedido the fechaPedido to set
-     */
-    public void setFechaPedido(Date fechaPedido) {
-        this.fechaPedido = fechaPedido;
+    public void setVentas(Collection<LineaVenta> ventas) {
+        this.ventas = ventas;
     }
     
 }

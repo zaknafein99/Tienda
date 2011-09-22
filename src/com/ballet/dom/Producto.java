@@ -5,12 +5,12 @@
 package com.ballet.dom;
 
 import java.io.Serializable;
-import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -19,17 +19,15 @@ import javax.persistence.NamedQuery;
  *
  * @author Isma
  */
-@NamedQueries({@NamedQuery(name = "Productos.findAll", query = "SELECT p FROM Producto p")})
+@NamedQueries({@NamedQuery(name = "Productos.findAll", query = "SELECT p FROM Producto p"), @NamedQuery(name = "Productos.findByProv", query = "SELECT p FROM Producto p WHERE p.proveedor =:proveedor")})
+
 @Entity
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class Producto implements Serializable {
-    @ManyToMany(mappedBy = "productos")
-    private List<Compra> compras;
     
-    private String descripcion;
-    private String color;
-    private String talle;
-    private Double precioCompra;
-    private Double precioVenta;
+    protected String descripcion;
+    protected String color;
+    protected String talle;
     @ManyToOne
     private Proveedor proveedor;
     private static final long serialVersionUID = 1L;
@@ -44,7 +42,8 @@ public class Producto implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
-
+    
+    
     @Override
     public int hashCode() {
         int hash = 0;
@@ -67,22 +66,10 @@ public class Producto implements Serializable {
 
     @Override
     public String toString() {
-        return "com.ballet.dom.Producto[ id=" + id + " ]";
+        return this.descripcion + " - Color " + this.color + " - Talle - " + this.talle;
     }
 
-    /**
-     * @return the compras
-     */
-    public List<Compra> getCompras() {
-        return compras;
-    }
-
-    /**
-     * @param compras the compras to set
-     */
-    public void setCompras(List<Compra> compras) {
-        this.compras = compras;
-    }
+    
 
     /**
      * @return the descripcion
@@ -126,33 +113,7 @@ public class Producto implements Serializable {
         this.talle = talle;
     }
 
-    /**
-     * @return the precioCompra
-     */
-    public Double getPrecioCompra() {
-        return precioCompra;
-    }
-
-    /**
-     * @param precioCompra the precioCompra to set
-     */
-    public void setPrecioCompra(Double precioCompra) {
-        this.precioCompra = precioCompra;
-    }
-
-    /**
-     * @return the precioVenta
-     */
-    public Double getPrecioVenta() {
-        return precioVenta;
-    }
-
-    /**
-     * @param precioVenta the precioVenta to set
-     */
-    public void setPrecioVenta(Double precioVenta) {
-        this.precioVenta = precioVenta;
-    }
+    
 
     /**
      * @return the proveedor
@@ -167,5 +128,7 @@ public class Producto implements Serializable {
     public void setProveedor(Proveedor proveedor) {
         this.proveedor = proveedor;
     }
+
+    
     
 }
