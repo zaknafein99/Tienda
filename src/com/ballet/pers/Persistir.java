@@ -84,6 +84,26 @@ public class Persistir {
    }
 }
     
+    public void cancelarVentaItem(ItemStock item){
+    EntityManagerFactory emf = javax.persistence.Persistence.createEntityManagerFactory("TiendaPU");
+    EntityManager em = emf.createEntityManager();
+    em.getTransaction().begin();
+    try {
+        ItemStock existingItem = em.find(ItemStock.class, item.getId());
+        existingItem.setFechaVenta(null);
+        existingItem.setPrecioVenta(0);
+        existingItem.setVendido(false);
+        
+        em.getTransaction().commit();
+    } catch (Exception e) {
+        e.printStackTrace();
+        em.getTransaction().rollback();
+    }finally {
+   em.close();
+   emf.close();
+   }
+}
+    
     public Proveedor buscarProveedor(long id){
         EntityManagerFactory emf = javax.persistence.Persistence.createEntityManagerFactory("TiendaPU");
         EntityManager em = emf.createEntityManager();
