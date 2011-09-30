@@ -123,6 +123,26 @@ public class Persistir {
         return prov;
     }
     
+    public Long contar(String nombre){
+        EntityManagerFactory emf = javax.persistence.Persistence.createEntityManagerFactory("TiendaPU");
+        EntityManager em = emf.createEntityManager();
+        em.getTransaction().begin();
+        Long count = null;
+        try {
+          Query query=em.createNativeQuery("SELECT COUNT(descripcion) FROM ItemStock WHERE descripcion = " + "'"+nombre+"'" + "AND vendido = 'false'");
+            query.setParameter("nombreParam", nombre);
+            count = (Long)query.getSingleResult();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            em.getTransaction().rollback();
+        }finally {
+       em.close();
+       emf.close();
+        }
+        return count;
+    }
+    
     public Collection<Proveedor> listarProveedores(){
       List list = null;
       EntityManagerFactory emf = Persistence.createEntityManagerFactory("TiendaPU" );

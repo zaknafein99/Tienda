@@ -13,13 +13,15 @@ package com.ballet.gui;
 import com.ballet.dom.Proveedor;
 import com.ballet.pers.Persistir;
 import ca.odell.glazedlists.*;
+import ca.odell.glazedlists.matchers.MatcherEditor;
 import ca.odell.glazedlists.swing.*;
 import com.ballet.dom.LineaCompra;
 import com.ballet.dom.Compra;
+import com.ballet.dom.ItemComparator;
 import com.ballet.dom.ItemStock;
+import com.ballet.dom.ItemTextFilterator;
 import com.ballet.dom.LineaVenta;
 import com.ballet.dom.Producto;
-import com.ballet.dom.Venta;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -30,6 +32,7 @@ import java.util.Iterator;
  * @author Isma
  */
 public class Pantalla extends javax.swing.JFrame {
+    
     Collection<Proveedor> proveedores = Persistir.getInstancia().listarProveedores();
     private EventList<Producto> prodEventList = new BasicEventList<Producto>();
     Collection<Producto> productos = Persistir.getInstancia().listarProductos();
@@ -47,17 +50,25 @@ public class Pantalla extends javax.swing.JFrame {
     }
     /** Creates new form Pantalla */
     public Pantalla() {
+        
         initComponents();
+        
+        SortedList<ItemStock> sortedItems = new SortedList<ItemStock>(itemStockEventList, new ItemComparator());
+        MatcherEditor<ItemStock> textmMatcherEditor = new TextComponentMatcherEditor<ItemStock>(txtBuscarXDescr, new ItemTextFilterator());
+        FilterList<ItemStock> textFilteredItems = new FilterList<ItemStock>(sortedItems, textmMatcherEditor);
+        
         provEventList.addAll(proveedores);
         prodEventList.addAll(productos);
         stockEventList.addAll(productos);
         itemStockEventList.addAll(stock);
+        textFilteredItems.addAll(stock);
         DefaultEventComboBoxModel provBoxModel = new DefaultEventComboBoxModel(provEventList);
         DefaultEventTableModel<Proveedor> provListModel = new DefaultEventTableModel<Proveedor>(provEventList, new ProveedoresTableFormat());
         DefaultEventTableModel<Producto> prodTableModel = new DefaultEventTableModel<Producto>(prodEventList, new ProductosTableFormat());
         DefaultEventComboBoxModel prodBoxModel = new DefaultEventComboBoxModel(prodEventList);
         DefaultEventListModel<LineaCompra> comprasListModel = new DefaultEventListModel<LineaCompra>(prodAComprarEventList);
-        DefaultEventTableModel<ItemStock> stockTableModel = new DefaultEventTableModel<ItemStock>(itemStockEventList, new ItemStockTableFormat());
+//        DefaultEventTableModel<ItemStock> stockTableModel = new DefaultEventTableModel<ItemStock>(itemStockEventList, new ItemStockTableFormat());
+        DefaultEventTableModel<ItemStock> stockTableModel = new DefaultEventTableModel<ItemStock>(textFilteredItems, new ItemStockTableFormat());
         DefaultEventTableModel<ItemStock> ventaStockTableModel = new DefaultEventTableModel<ItemStock>(ventaItemStockEventList, new VentaStockTableFormat());
         tblProv.setModel(provListModel);
         tblProd.setModel(prodTableModel);
@@ -68,6 +79,9 @@ public class Pantalla extends javax.swing.JFrame {
         lstPedido.setModel(comprasListModel);
         tblStock.setModel(stockTableModel);
         tblVenta.setModel(ventaStockTableModel);
+        TableComparatorChooser tableSorter = TableComparatorChooser.install(tblStock, sortedItems, TableComparatorChooser.MULTIPLE_COLUMN_MOUSE);
+        countItem1();
+        
         
     }
     
@@ -99,6 +113,9 @@ public class Pantalla extends javax.swing.JFrame {
         btnQuitar = new javax.swing.JButton();
         jScrollPane5 = new javax.swing.JScrollPane();
         tblStock = new javax.swing.JTable();
+        lblCount1 = new javax.swing.JLabel();
+        txtBuscarXDescr = new javax.swing.JTextField();
+        jLabel18 = new javax.swing.JLabel();
         jPanelVentas = new javax.swing.JPanel();
         jScrollPane6 = new javax.swing.JScrollPane();
         tblProdsVenta = new javax.swing.JTable();
@@ -214,6 +231,10 @@ public class Pantalla extends javax.swing.JFrame {
         ));
         jScrollPane5.setViewportView(tblStock);
 
+        lblCount1.setText("jLabel18");
+
+        jLabel18.setText("Buscar:");
+
         javax.swing.GroupLayout jPanelComprasLayout = new javax.swing.GroupLayout(jPanelCompras);
         jPanelCompras.setLayout(jPanelComprasLayout);
         jPanelComprasLayout.setHorizontalGroup(
@@ -221,6 +242,7 @@ public class Pantalla extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelComprasLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanelComprasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 564, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelComprasLayout.createSequentialGroup()
                         .addComponent(jLabel14)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -229,12 +251,15 @@ public class Pantalla extends javax.swing.JFrame {
                         .addComponent(jLabel15)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cboProv, 0, 406, Short.MAX_VALUE))
+                    .addComponent(lblCount1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanelComprasLayout.createSequentialGroup()
                         .addGroup(jPanelComprasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel16)
-                            .addComponent(jLabel17))
+                            .addComponent(jLabel17)
+                            .addComponent(jLabel18))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanelComprasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtBuscarXDescr, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelComprasLayout.createSequentialGroup()
                                 .addComponent(txtPrecioCompra, javax.swing.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -243,8 +268,7 @@ public class Pantalla extends javax.swing.JFrame {
                                 .addComponent(dpFechaComp, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(btnAgregarACompra, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(cboProductos, javax.swing.GroupLayout.PREFERRED_SIZE, 312, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 564, Short.MAX_VALUE))
+                            .addComponent(cboProductos, javax.swing.GroupLayout.PREFERRED_SIZE, 312, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanelComprasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanelComprasLayout.createSequentialGroup()
@@ -260,11 +284,7 @@ public class Pantalla extends javax.swing.JFrame {
                 .addGroup(jPanelComprasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelComprasLayout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 488, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanelComprasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnQuitar)
-                            .addComponent(btnGuardarCompra)))
+                        .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 488, Short.MAX_VALUE))
                     .addGroup(jPanelComprasLayout.createSequentialGroup()
                         .addGap(15, 15, 15)
                         .addGroup(jPanelComprasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -284,8 +304,18 @@ public class Pantalla extends javax.swing.JFrame {
                                 .addComponent(jLabel11)
                                 .addComponent(txtPrecioCompra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(jLabel17)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 422, Short.MAX_VALUE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanelComprasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel18)
+                            .addComponent(txtBuscarXDescr, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(15, 15, 15)
+                        .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 335, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblCount1, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanelComprasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnQuitar)
+                    .addComponent(btnGuardarCompra))
                 .addContainerGap())
         );
 
@@ -680,6 +710,11 @@ public class Pantalla extends javax.swing.JFrame {
         System.exit(0);
     }//GEN-LAST:event_exitMenuItemActionPerformed
 
+    private void countItem1(){
+        Long cont1 = Persistir.getInstancia().contar("zapatilla lona");
+        lblCount1.setText(String.valueOf(cont1));
+    }
+    
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
         Proveedor prov = new Proveedor();
         prov.setApellido(txtApellido.getText());
@@ -857,6 +892,7 @@ public class Pantalla extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -877,6 +913,7 @@ public class Pantalla extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JLabel lblCount1;
     private javax.swing.JList lstPedido;
     private javax.swing.JList lstProductosXProv;
     private javax.swing.JMenuBar menuBar;
@@ -891,6 +928,7 @@ public class Pantalla extends javax.swing.JFrame {
     private javax.swing.JTable tblVenta;
     private javax.swing.JTextField txtApellido;
     private javax.swing.JTextField txtBanco;
+    private javax.swing.JTextField txtBuscarXDescr;
     private javax.swing.JTextField txtCant;
     private javax.swing.JTextField txtColor;
     private javax.swing.JTextField txtCuenta;
